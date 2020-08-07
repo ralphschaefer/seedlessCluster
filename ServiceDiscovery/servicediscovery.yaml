@@ -1,0 +1,6 @@
+db:
+  file: /api/servicediscovery.db
+  bucket: service
+server:
+  port: 9000
+  host: 0.0.0.0
