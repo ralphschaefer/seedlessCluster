@@ -1,3 +1,10 @@
 package my.clusterDemo.dtos.dData
 
-case class Sum(result:Int)
+import akka.cluster.ddata.ReplicatedData
+
+case class Sum(result:Int) extends ReplicatedData {
+  type T = Sum
+  override def merge(that: Sum): Sum = {
+    that
+  }
+}
