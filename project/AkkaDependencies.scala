@@ -18,6 +18,7 @@ object AkkaDependencies {
       "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
+      "com.typesafe.akka" %% "akka-distributed-data" % akkaVersion,
       "com.lightbend.akka.management" %% "akka-management" % akkaManagementVersion,
       "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % akkaManagementVersion,
       // "com.lightbend.akka.discovery" %% "akka-discovery-dns" % akkaManagementVersion,

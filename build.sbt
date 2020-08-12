@@ -1,6 +1,6 @@
 organization := "my.clusterDemo"
 
-scalaVersion := "2.13.2"
+scalaVersion := "2.13.3"
 
 version := "0.1"
 
@@ -10,6 +10,7 @@ name := "clusterDemo"
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
+      scalaVersion := "2.13.3",
       organization := "my.clusterDemo",
       test in assembly := {},
       assemblyJarName in assembly := "clusterDemo.jar"

@@ -1,10 +1,13 @@
 package my.clusterDemo
 
+import akka.actor.ActorRef
+import akka.routing.FromConfig
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.Await
 import my.clusterDemo.serviceDiscovery.helper.RegisterHelper
 import my.clusterDemo.serviceDiscovery.MyServiceDiscovery
+
 import scala.concurrent.duration._
 
 object Main extends App with StrictLogging {
@@ -32,13 +35,29 @@ object Main extends App with StrictLogging {
   val logActor = nodeInfo.system.actorOf(actors.WriteToLog.props(), "logEndpoint")
   logActor ! actors.Message("hello")
 
-  val distribute = nodeInfo.system.actorOf(actors.MessageDistributer.props())
+  logger.debug("---- bring up sum actor")
+  val sumActor = nodeInfo.system.actorOf(actors.Sum.props(0), "sumData")
+
+  logger.debug("---- bing up display actor")
+  val displayActor = nodeInfo.system.actorOf(actors.Display.props(sumActor, logActor), "displayData")
+
+  val distribute = nodeInfo.system.actorOf(actors.MessageDistributor.props(), "distributor")
 
   println("Enter any text or 'exit'")
   var line = "N/A"
+  val sumMatcher = """^sum\(([0-9]+)\)$""".r
+  val sumRoute: ActorRef = nodeInfo.system.actorOf(FromConfig.getInstance.props(), "sumRoute")
+
   while (line != "exit") {
     line = scala.io.StdIn.readLine()
-    distribute ! actors.Message(line)
+    line match {
+      case "display" =>
+        distribute ! actors.Display.DisplaySum
+      case sumMatcher(s) =>
+        sumRoute ! actors.Sum.Add(s.toInt)
+      case other =>
+        distribute ! actors.Message(other)
+    }
   }
 
   logger.debug("----- deregister self")
