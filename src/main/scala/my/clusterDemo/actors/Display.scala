@@ -6,7 +6,6 @@ class Display(sumActorRef: ActorRef, writeToLogRef: ActorRef) extends Actor with
 
   override def receive: Receive = {
     case Display.DisplaySum => {
-      log.info("---- Display Sum")
       sumActorRef ! Sum.DisplayState(writeToLogRef)
     }
   }
