@@ -12,6 +12,10 @@ import scala.concurrent.duration._
 
 object Main extends App with StrictLogging {
 
+  import my.clusterDemo.messages.DisplaySum
+  import my.clusterDemo.messages.Add
+  import my.clusterDemo.messages.Message
+
   println("Akka Test Node")
 
   logger.debug("---- connect to cluster")
@@ -33,7 +37,7 @@ object Main extends App with StrictLogging {
 
   logger.debug("---- bring up writelog actor")
   val logActor = nodeInfo.system.actorOf(actors.WriteToLog.props(), "logEndpoint")
-  logActor ! actors.Message("hello")
+  logActor ! Message("hello")
 
   logger.debug("---- bring up sum actor")
   val sumActor = nodeInfo.system.actorOf(actors.Sum.props(0), "sumData")
@@ -52,11 +56,11 @@ object Main extends App with StrictLogging {
     line = scala.io.StdIn.readLine()
     line match {
       case "display" =>
-        distribute ! actors.Display.DisplaySum
+        distribute ! DisplaySum
       case sumMatcher(s) =>
-        sumRoute ! actors.Sum.Add(s.toInt)
+        sumRoute ! Add(s.toInt)
       case other =>
-        distribute ! actors.Message(other)
+        distribute ! Message(other)
     }
   }
 

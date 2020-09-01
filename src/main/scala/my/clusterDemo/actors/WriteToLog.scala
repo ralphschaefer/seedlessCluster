@@ -6,6 +6,8 @@ import akka.cluster.ClusterEvent._
 
 class WriteToLog extends Actor with ActorLogging {
 
+  import my.clusterDemo.messages.Message
+
   val cluster = Cluster(context.system)
 
   override def preStart(): Unit = cluster.subscribe(self, classOf[MemberEvent])

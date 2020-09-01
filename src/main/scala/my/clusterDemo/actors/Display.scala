@@ -4,8 +4,11 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 class Display(sumActorRef: ActorRef, writeToLogRef: ActorRef) extends Actor with ActorLogging {
 
+  import my.clusterDemo.messages.DisplaySum
+
   override def receive: Receive = {
-    case Display.DisplaySum => {
+    case DisplaySum => {
+      log.info("display sum")
       sumActorRef ! Sum.DisplayState(writeToLogRef)
     }
   }
@@ -13,8 +16,6 @@ class Display(sumActorRef: ActorRef, writeToLogRef: ActorRef) extends Actor with
 }
 
 object Display {
-  trait DisplayEntity
-  case object DisplaySum extends DisplayEntity
 
   def props(sumActorRef: ActorRef, writeToLogRef: ActorRef) = Props(new Display(sumActorRef, writeToLogRef))
 

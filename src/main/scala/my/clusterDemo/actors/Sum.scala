@@ -13,6 +13,8 @@ import scala.concurrent.duration.DurationInt
 
 class Sum(startValue: Int) extends Actor with ActorLogging {
 
+  import my.clusterDemo.messages.{Add, Message}
+
   implicit val cluster = Cluster(context.system)
 
   val replicator: ActorRef = DistributedData(context.system).replicator
@@ -32,20 +34,23 @@ class Sum(startValue: Int) extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case Sum.Add(value) =>
+    case Add(value) =>
       log.info(s"---- add $value")
       addToSum(value)
     case Sum.DisplayState(ref) =>
+      log.info("do display")
       replicator ! Get(mykey, ReadLocal, Some(ref))
     case g@GetSuccess(k, req) =>
        val theSum:dData.Sum  = g.get(k).asInstanceOf[dData.Sum]
+       log.info("display " + theSum.result)
        req.get.asInstanceOf[ActorRef] ! Message(s"+++++ current Sum: ${theSum.result}")
+    case other =>
+       log.info("other Messages: " + other.toString)
   }
 
 }
 
 object Sum {
   case class DisplayState(writeToLog: ActorRef)
-  case class Add(value: Int)
   def props(startValue: Int = 0) = Props(new Sum(startValue))
 }
