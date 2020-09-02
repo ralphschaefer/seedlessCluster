@@ -1,5 +1,7 @@
 package my.clusterDemo
 
+import java.lang.reflect.Field
+
 import akka.actor.ActorRef
 import akka.routing.FromConfig
 import com.typesafe.scalalogging.StrictLogging
@@ -7,8 +9,10 @@ import com.typesafe.scalalogging.StrictLogging
 import scala.concurrent.Await
 import my.clusterDemo.serviceDiscovery.helper.RegisterHelper
 import my.clusterDemo.serviceDiscovery.MyServiceDiscovery
+import my.clusterDemp.KRWarning
 
 import scala.concurrent.duration._
+
 
 object Main extends App with StrictLogging {
 
@@ -17,6 +21,7 @@ object Main extends App with StrictLogging {
   import my.clusterDemo.messages.Message
 
   println("Akka Test Node")
+  KRWarning.disable()
 
   logger.debug("---- connect to cluster")
   val nodeInfo = NodeInfo("miniNode") // TODO get from config
